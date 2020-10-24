@@ -116,7 +116,6 @@
     data() {
       return {
         delay: 0,
-        endVal: 120500,
         options: {
           useEasing: true,
           useGrouping: true,
@@ -125,7 +124,6 @@
           prefix: '',
           suffix: ''
         },
-        total: 100,
         indexData: [{
           name: '12月成交额(万元)',
           value: parseFloat(formatLargeNumber(774892333.00))
@@ -171,20 +169,36 @@
           },
           {
             "categoryid": "2",
-            "category": "综合用地"
+            "category": "工业用地"
           },
           {
             "categoryid": "3",
+            "category": "商业/办公用地"
+          },
+          {
+            "categoryid": "4",
+            "category": "综合用地"
+          },
+          {
+            "categoryid": "5",
             "category": "其他用地"
           }
         ],
 
         monthCategoryData: {
-          "住宅用地": [1861948, 913927, 22455374, 668794, 2019212, 1723540, 103971, 49293, 23297914, 893745, 807279,
-            125088572
+          "住宅用地": [1861948, 913927, 22455374, 668794, 2019212, 1723540, 103971,
+            49293, 23297914, 893745, 807279, 125088572
           ],
-          "其他用地": [3613416, 9468921, 896129, 905084, 6426396, 149322714, 88775962, 254250336, 250653267, 124496149, 451750782, 645125224],
-          "综合用地": [68945135, 2556749, 3539189, 21966316, 2899706, 10574287, 0, 0, 0, 36186, 14100, 87200]
+          "工业用地": [302915, 187430, 141258, 359227, 236175, 315220, 62148, 421689,
+            1147284, 1312205, 1427241, 4527137
+          ],
+          "商业/办公用地": [943227, 165619, 337946, 353902, 607271, 10810111, 0, 0, 0,
+            12789, 0, 64200],
+          "综合用地": [68945135, 2556749, 3539189, 21966316, 2899706, 10574287, 0, 0,
+            0, 36186, 14100, 87200],
+          "其他用地": [3613416, 9468921, 896129, 905084, 6426396, 149322714, 88775962,
+            254250336, 250653267, 124496149, 451750782, 645125224
+          ]
         },
         categoryClassifyData: [{
           "categoryid": "1",
@@ -287,23 +301,23 @@
           "categoryName": "用途",
           "data": [{
               "name": "综合用地",
-              "value": 110618870
+              "value": 938
             },
             {
               "name": "其他用地",
-              "value": 1985684382
+              "value": 22378
             },
             {
               "name": "商业/办公用地",
-              "value": 13295067
+              "value": 328
             },
             {
               "name": "工业用地",
-              "value": 10439932
+              "value": 9439
             },
             {
               "name": "住宅用地",
-              "value": 179883572
+              "value": 982
             }
           ]
         }, {
@@ -311,23 +325,23 @@
           "categoryName": "面积",
           "data": [{
               "name": "小于等于200平方米",
-              "value": 116986
+              "value": 848
             },
             {
               "name": "200到1千平方米",
-              "value": 130128
+              "value": 1203
             },
             {
               "name": "1千到1万平方米",
-              "value": 107381321
+              "value": 7158
             },
             {
               "name": "1万到10万平方米",
-              "value": 909387910
+              "value": 18301
             },
             {
               "name": "大于10万平方米",
-              "value": 1282905478
+              "value": 6555
             }
           ]
         }],
@@ -666,20 +680,20 @@
               }
             }
           },
-
           visualMap: { //左侧小导航图标
             show: true,
             x: 'left',
             y: 'center',
-            top: '260',
+            top: '250',
+            seriesIndex: [0, 1],
             textStyle: {
               color: "#8fc8f2"
             },
             splitList: [{
-                start: 2500
+                start: 2200
               }, {
                 start: 1000,
-                end: 2500
+                end: 2200
               },
               {
                 start: 500,
@@ -693,7 +707,7 @@
                 end: 100
               }
             ],
-            color: ['#9fb5ea', '#F4E925', '#85daef', '#74e2ca', '#e6ac53']
+            color: ['#6470ea', '#F4E925', '#85daef', '#74e2ca', '#e6ac53']
           },
           //布局
           grid: [{
@@ -756,7 +770,6 @@
             itemStyle: {
               normal: {
                 areaColor: 'transparent',
-                // borderColor: '#3fdaff',
                 borderWidth: 1,
                 shadowColor: 'rgba(63, 218, 255, 0.5)',
                 shadowBlur: 30
@@ -830,13 +843,17 @@
             {
               id: 'bar',
               name: '年订单总额按省份',
+              stack: 'bar',
               type: 'bar',
               xAxisIndex: 0,
               yAxisIndex: 0,
               tooltip: {
                 formatter: function(a, b, c) {
-                  return `${a.name}<br/>${formatLargeNumber(a.value)}万元`;
+                  return `${a.seriesName}<br/>${a.name}<br/>${formatLargeNumber(a.value)}万元`;
                 }
+              },
+              itemStyle: {
+                color: '#cc6907'
               },
               markPoint: {
                 data: [{
@@ -855,7 +872,7 @@
                   name: '平均值'
                 }]
               },
-              z: 2,
+              z: 3,
               data: that.provinceSaleMoney
             },
           ]
@@ -874,26 +891,37 @@
           ],
           tooltip: {
             formatter: function(a, b, c) {
-              return `${a.name}<br/>${formatLargeNumber(a.value)}万元`;
+              if (a.seriesIndex < 2) {
+                return `${a.name}  ${a.seriesName}<br/>${formatLargeNumber(a.value)}万元<br/>占比: ${a.percent}%`;
+              } else if (a.seriesIndex === 3) {
+                return `${a.name}  ${a.seriesName}<br/>${a.value}单<br/>占比: ${a.percent}%`;
+              } else {
+                return `面积在 ${a.name}  ${a.seriesName}<br/>${a.value}单<br/>占比: ${a.percent}%`;
+              }
+
             }
           },
           series: [{
             type: 'pie',
+            name: '省交易额',
             radius: 50,
             center: ['25%', '20%'],
             data: categoryClassifyData[0].data
           }, {
             type: 'pie',
+            name: '交易额',
             radius: 50,
             center: ['65%', '20%'],
             data: categoryClassifyData[1].data
           }, {
             type: 'pie',
+            name: '订单数占比',
             radius: 50,
             center: ['25%', '65%'],
             data: categoryClassifyData[2].data
           }, {
             type: 'pie',
+            name: '订单数',
             radius: 50,
             center: ['65%', '65%'],
             data: categoryClassifyData[3].data
@@ -996,7 +1024,7 @@
               markPoint,
             },
             {
-              name: "其他用地",
+              name: "工业用地",
               type: 'bar',
               stack: '总量',
               label: {
@@ -1005,10 +1033,23 @@
                   position: 'insideRight'
                 }
               },
-              data: monthCategoryData["其他用地"],
+              data: monthCategoryData["工业用地"],
               itemStyle,
-              markPoint,
-
+              markPoint
+            },
+            {
+              name: "商业/办公用地",
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'insideRight'
+                }
+              },
+              data: monthCategoryData["商业/办公用地"],
+              itemStyle,
+              markPoint
             },
             {
               name: "综合用地",
@@ -1025,7 +1066,7 @@
               markPoint
             },
             {
-              name: "面积",
+              name: "其他用地",
               type: 'bar',
               stack: '总量',
               label: {
@@ -1034,11 +1075,10 @@
                   position: 'insideRight'
                 }
               },
-              data: monthCategoryData["面积"],
+              data: monthCategoryData["其他用地"],
               itemStyle,
-              markPoint
+              markPoint,
             }
-
           ]
         };
         this.myChart = this.$echarts.init(this.$refs.categoryChart);
@@ -1060,7 +1100,7 @@
             type: 'legendToggleSelect',
             name: data[++i % data.length]
           })
-          option.title.text = `销售额（按 ${data[ i % data.length ]}）`; //动态设置标题
+          option.title.text = `月交易总额（按 ${data[ i % data.length ]}）`; //动态设置标题
           this.myChart.setOption(option)
         }, 3500)
       },
