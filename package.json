@@ -1,8 +1,8 @@
 {
-  "name": "dashboard",
-  "version": "1.0.0",
-  "description": "dashboard project",
-  "author": "chellel",
+  "name": "vue-echarts-map",
+  "version": "1.1.0",
+  "description": "vue-echarts-map",
+  "author": "foxwill-秋叶",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
